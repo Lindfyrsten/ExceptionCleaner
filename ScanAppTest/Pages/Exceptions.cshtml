@@ -1,0 +1,128 @@
+﻿@page
+@using Kendo.Mvc.UI
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+@model ExceptionsModel
+@{
+    ViewData["Title"] = "Exceptions";
+}
+<br />
+<h4>@Html.Label("application", "Vælg Applikation")</h4>
+@(Html.Kendo().DropDownList()
+            .Name("apps")
+            .DataTextField("AppName")
+            .DataValueField("AppId")
+            .HtmlAttributes(new { style = "width:300px;" })
+            .AutoBind(false)
+            .Filter(FilterType.Contains)
+            .DataSource(ds => ds
+                .Read(r => r.Url(Url.Content("~/Exceptions?handler=AppList")).Data("forgeryToken"))
+                )
+            )
+@(Html.Kendo().Grid<ScanAppWeb.Models.ExViewModel>()
+        .Name("Grid")
+        .Columns(columns =>
+        {
+        columns.Bound(e => e.AppName)
+            .Title("App")
+            .Width(200)
+            .HtmlAttributes(new { style = "font-size:10pt;" });
+        columns.Bound(e => e.FileName)
+            .Width(275)
+            .HtmlAttributes(new { style = "font-size:10pt;" });
+        columns.Bound(e => e.ExMsg)
+                .Title("Exception")
+                .HtmlAttributes(new { style = "font-size:8pt;" });
+        columns.Command(command =>
+        {
+            command.Custom("Details").Click("showDetails");
+            command.Destroy();
+        }).Width(200);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Search();
+        })
+        .Groupable()
+        .Navigatable()
+        .Scrollable()
+        .Height(650)
+        .AutoBind(true)
+        .Filterable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Read(r => r.Url(Url.Content("~/Exceptions?handler=Read")).Data("forgeryToken"))
+            .Destroy(d => d.Url(Url.Content("~/Exceptions?handler=Destroy")).Data("forgeryToken"))
+            .Model(m => m.Id(id => id.ExceptionId))
+        )
+)
+@(Html.Kendo().Window().Name("Details")
+    .Title("Details")
+    .Visible(false)
+    .Modal(true)
+    .Draggable(true)
+    .Width(600)
+)
+
+<script type="text/x-kendo-template" id="template">
+    <div id="details-container">
+        <p>#= ExMsg #</p>
+        <p>File: #= FileName #</p>
+        <ul>
+        <em>
+            <li>Line: #= Index #</li>
+            <li>Date: #= Date #</li>
+            <li>Previous lines: #= PreLines #</li>
+        </em>
+        </ul>
+    </div>
+</script>
+
+<script type="text/javascript">
+
+    var detailsTemplate;
+
+    $(document).ready(function () {
+        detailsTemplate = kendo.template($("#template").html());
+    });
+
+    function showDetails(e) {
+        e.preventDefault();
+
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var wnd = $("#Details").data("kendoWindow");
+
+        wnd.content(detailsTemplate(dataItem));
+        wnd.center().open();
+    }
+    function dataFunction() {
+        var value = $("#apps").getKendoDropDownList().filterInput.val();
+        return {
+            __RequestVerificationToken: kendo.antiForgeryTokens().__RequestVerificationToken,
+            filterValue: value
+        };
+    }
+
+    function forgeryToken() {
+        return kendo.antiForgeryTokens();
+    }
+</script>
+
+<style>
+    #details-container {
+        padding: 10px;
+    }
+
+        #details-container h2 {
+            margin: 0;
+        }
+
+        #details-container em {
+            color: #8c8c8c;
+        }
+
+        #details-container dt {
+            margin: 0;
+            display: inline;
+        }
+</style>

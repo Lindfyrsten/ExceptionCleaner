@@ -1,0 +1,84 @@
+﻿@page "{appname}"
+@model ScanApp.Web.Pages.AppFilters.IndexModel
+@using Kendo.Mvc.UI
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@(Html.Kendo().Grid<ScanAppWeb.Models.FilterViewModel>()
+        .Name("Grid")
+        .Columns(columns =>
+        {
+        columns.Bound(f => f.AppName)
+            .Width(275)
+            .HtmlAttributes(new { style = "font-size:10pt;" });
+        columns.Bound(f => f.Value)
+                .Title("Filter")
+                .HtmlAttributes(new { style = "font-size:8pt;" });
+        columns.Command(command =>
+        {
+            command.Destroy();
+        }).Width(200);
+        })
+        .ToolBar(toolbar =>
+        {
+            toolbar.Search();
+        })
+        .Groupable()
+        .Navigatable()
+        .Scrollable()
+        .Height(650)
+        .AutoBind(true)
+        .Filterable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Read(r => r.Url(Url.Content("~/AppFilters/Index?handler=Read")).Data("forgeryToken"))
+            .Destroy(d => d.Url(Url.Content("~/AppFilters/Index?handler=Destroy")).Data("forgeryToken"))
+            .Model(m => m.Id(id => id.FilterId))
+        )
+)
+
+<script type="text/javascript">
+        function forgeryToken() {
+            return kendo.antiForgeryTokens();
+        }
+</script>
+@*<h1>Index</h1>
+
+    <p>
+        <a asp-page="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Filter[0].value)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Filter[0].appID)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Filter)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.value)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.appID)
+                    </td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.FilterId">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.FilterId">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.FilterId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@

@@ -1,0 +1,49 @@
+﻿@page
+@model ScanAppWeb.Pages.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>@Html.DisplayFor(model => model.Exception.FileName)</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Exception.Index)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Exception.Index)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Exception.ExMsg)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Exception.ExMsg)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Exception.Date)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Exception.Date)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Exception.PreLines)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Exception.PreLines)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Exception.FileName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Exception.FileName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Index"
+       asp-route-id="@Model.Exception.AppId">Back to List</a>
+</div>

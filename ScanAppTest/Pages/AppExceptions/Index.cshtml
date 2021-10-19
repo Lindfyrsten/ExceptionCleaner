@@ -1,0 +1,43 @@
+﻿@page "{id}"
+@model ScanAppWeb.Pages.AppExceptions.AppExceptionsModel
+
+@{
+    ViewData["Title"] =  "Exceptions";
+}
+
+<h1>@Model.AppName</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Exceptions[0].ExMsg)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Exceptions[0].Index)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Exceptions[0].Date)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Exceptions) {
+        <tr class="table-active" style="font-size:12px">
+            <td style="max-width:800px">
+                @Html.DisplayFor(modelItem => item.ExMsg)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Index)
+            </td>
+            <td>
+                @item.Date.ToShortDateString()
+            </td>
+            <td>
+                <a asp-page="./Details" asp-route-id="@item.ExceptionId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ExceptionId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
