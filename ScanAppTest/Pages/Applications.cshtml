@@ -1,0 +1,78 @@
+﻿@page
+@model ApplicationsModel
+@using Kendo.Mvc.UI
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Html.AntiForgeryToken()
+@{
+    ViewData["Title"] = "Applications";
+}
+@(Html.Kendo().Grid<Models.AppViewModel>()
+        .Name("Grid")
+        .Columns(columns =>
+        {
+            columns.Bound(a => a.Name).Title("Name");
+            columns.Bound(a => a.FilterCount).Title("Filters").Width(100);
+
+            @*columns.Command(command => command.Custom("Edit").Action("AppFilters", "AppFilters");*@
+            columns.Command(command => command.Custom("Edit").Click("appFilters")).Width(100);
+            columns.Bound(a => a.AppExceptions).Title("Exceptions").Width(100);
+            columns.Command(command => command.Custom("Show").Click("appExceptions")).Width(100);
+        })
+        .Navigatable()
+        .Scrollable()
+        .AutoBind(true)
+        .Sortable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Read(r => r.Url(Url.Content("~/Applications?handler=Read")).Data("forgeryToken"))
+            .Model(m => m.Id(id => id.AppId))
+        )
+   )
+<script type="text/javascript">
+
+    function appExceptions(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+        var id = dataItem.AppId;
+        window.location.href = "/AppExceptions/Index/" + id;
+    }
+
+    function appFilters(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+        var id = dataItem.AppId;
+        var name = dataItem.Name;
+        window.location.href = "/AppFilters/Index/" + name;
+    }
+
+    function forgeryToken() {
+        return kendo.antiForgeryTokens();
+    }
+
+
+
+</script>
+
+<style>
+
+    #details-container {
+        padding: 10px;
+    }
+
+        #details-container h2 {
+            margin: 0;
+        }
+
+        #details-container em {
+            color: #8c8c8c;
+        }
+
+        #details-container dt {
+            margin: 0;
+            display: inline;
+        }
+</style>
+
+

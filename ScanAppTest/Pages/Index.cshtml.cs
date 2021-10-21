@@ -1,37 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using ScanAppWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
-using ScanApp.db.Database;
+using Kendo.Mvc.UI;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using ScanApp.Web.Services;
+using ScanAppWeb.Models;
 
-namespace ScanAppWeb.Pages
+namespace ScanApp.Web.Pages
 {
     public class IndexModel : PageModel
     {
-        public readonly ExContext _context;
-        private static List<AppViewModel> appsDB = new();
-        public string Message { get; set; }
 
-        public IndexModel(ExContext context)
+        public List<ScanInfoViewModel> Scans = new();
+        public void OnGet()
         {
-            _context = context;
+            if (!Scans.Any())
+            {
+                var service = new ScanService();
+                Scans.AddRange(service.Read());
+            }
         }
 
         public JsonResult OnPostRead([DataSourceRequest] DataSourceRequest request)
         {
-            if (!appsDB.Any())
+            if (!Scans.Any())
             {
-                var service = new AppService();
-                appsDB.AddRange(service.Read());
+                var service = new ScanService();
+                Scans.AddRange(service.Read());
             }
-            return new JsonResult(appsDB.ToDataSourceResult(request));
+            return new JsonResult(Scans.ToDataSourceResult(request));
+        }
+        public List<int> ChartTotals()
+        {
+            List<int> ScanNumbers = new();
+            foreach(var scan in Scans)
+            {
+                ScanNumbers.Add(scan.ExTotal);
+            }
+
+            return ScanNumbers;
+        }
+
+        public List<string> ChartDates()
+        {
+            List<string> ScanDates = new();
+            foreach(var scan in Scans)
+            {
+                ScanDates.Add(scan.Date.ToShortDateString());
+            }
+            return ScanDates;
         }
     }
 }

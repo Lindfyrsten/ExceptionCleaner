@@ -19,7 +19,7 @@ namespace ScanAppWeb.Pages
     {
         public readonly ExContext _context;
 
-        public List<ExViewModel> exceptionsDB = new();
+        public List<ExViewModel> ExceptionsDB = new();
         public List<AppViewModel> AppDb = new();
 
         public ExceptionsModel(ExContext context)
@@ -30,15 +30,15 @@ namespace ScanAppWeb.Pages
 
         public JsonResult OnPostRead([DataSourceRequest] DataSourceRequest request)
         {
-            if (!exceptionsDB.Any())
+            if (!ExceptionsDB.Any())
             {
                 var service = new ExceptionService();
-                exceptionsDB.AddRange(service.Read());
+                ExceptionsDB.AddRange(service.Read());
             }
-            return new JsonResult(exceptionsDB.ToDataSourceResult(request));
+            return new JsonResult(ExceptionsDB.ToDataSourceResult(request));
         }
 
-        public JsonResult OnPostDestroy([DataSourceRequest] DataSourceRequest request, ScanAppWeb.Models.ExViewModel e)
+        public JsonResult OnPostDestroy([DataSourceRequest] DataSourceRequest request, ExViewModel e)
         {
             _context.Exceptions.Remove(_context.Exceptions.FirstOrDefault(x => x.ExceptionId == e.ExceptionId));
             _context.SaveChanges();
@@ -52,7 +52,7 @@ namespace ScanAppWeb.Pages
                 var service = new AppService();
                 AppDb.AddRange(service.Read());
             }
-            return new JsonResult(exceptionsDB.ToDataSourceResult(request));
+            return new JsonResult(ExceptionsDB.ToDataSourceResult(request));
         }
 
 
