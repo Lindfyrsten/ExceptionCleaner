@@ -1,6 +1,4 @@
 ﻿
-using Scan_console_app.Database;
-using Scan_console_app.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,8 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ScanApp.db.Database;
+using ScanApp.db.Model;
 
-namespace Scan_console_app
+namespace ScanApp
 {
     class Scanner
     {
@@ -35,7 +35,7 @@ namespace Scan_console_app
                 App a = Db.AddApp(app);
                 foreach (var file in Directory.EnumerateFiles(folder, "*.log", SearchOption.AllDirectories))
                 {
-                    int index = 0; //line index
+                    int index = 1; //line index
                     string filenameWithoutPath = Path.GetFileName(file); // gets filename with System.IO.Path
                     foreach (Match m in regex.Matches(filenameWithoutPath.ToString()))
                     {
@@ -46,12 +46,29 @@ namespace Scan_console_app
                                 {
                                     if (line.Contains("Exception")) // check each line for "Exception"
                                     {
+                                        bool filtered = false;
+                                        var filterValues = GetFilters(a.Name);
+                                        if (filterValues.Any())
+                                        {
+                                            foreach (var filter in filterValues)
+                                            {
+                                                if (line.Contains(filter.Value)) { filtered = true; }
+                                            }
+
+                                        }
+                                        if (!filtered)
+                                        {
                                         StringBuilder sb = new();
-                                        foreach (string preline in File.ReadLines(file).Skip(index - 3).Take(3)) { // read 3 previous lines prior to exception - can and probably will break if exception is found in the first 3 lines. Need to test and solve.
+                                        int prelines = 3;
+                                        if (index <= 3) {
+                                                prelines = index - 1;
+                                        }
+                                        foreach (string preline in File.ReadLines(file).Skip((index -1) - prelines).Take(prelines)) { // read up to 3 previous lines prior to exception
                                             sb.Append(preline); // save each in stringbuilder
                                         }
-                                        Model.Exception ex = new(a.AppId, index, line, dt, sb.ToString(), filenameWithoutPath);
+                                        db.Model.Exception ex = new(a.AppId, index, line, dt, sb.ToString(), filenameWithoutPath);
                                         Db.AddException(ex);
+                                        }
                                     }
                                     index++; // add to index to keep track of line number
                                 }
@@ -59,6 +76,41 @@ namespace Scan_console_app
                     }
                 }
             }
+            RegisterScan();
+        }
+
+        private List<db.Model.Filter> GetFilters(string AppName)
+        {
+            var filters = Db.Filters.Where(f => f.AppName == AppName).ToList();
+            return filters;
+        }
+
+        private void RegisterScan()
+        {
+            var ex = Db.Exceptions;
+            var scans = Db.ScanInfos.ToList();
+            int exTotal = ex.Count();
+            int exSinceLastScan;
+            if (scans.Any())
+            {
+                ScanInfo lastScan = scans.Last();
+                exSinceLastScan = exTotal - lastScan.ExTotal;
+            }
+            else { exSinceLastScan = exTotal; }
+
+
+            // Performance mæssigt noget lort. Overvej at fjerne
+            var exLast24 = 0;
+            foreach (var e in ex)
+            {
+                if (e.Date >= DateTime.Now.AddDays(-1))
+                {
+                    exLast24++;
+                }
+            }
+            var s = new ScanInfo(DateTime.Now, exLast24, exSinceLastScan, exTotal);
+            Db.ScanInfos.Add(s);
+            Db.SaveChanges();
         }
     }
 }

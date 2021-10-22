@@ -1,12 +1,11 @@
-﻿using Scan_console_app.Database;
-using Scan_console_app.Model;
-using System;
-using System.Data.Entity;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ScanApp.db.Database;
+using ScanApp.db.Model;
 
-namespace Scan_console_app
+namespace ScanApp
 {
     class Program
     {
@@ -17,14 +16,18 @@ namespace Scan_console_app
             using (var db = new ExContext())
             {
 
-                //db.ResetDB();
+                db.ResetDB();
+
                 Stopwatch watch = new();
                 watch.Start();
-                //ScannerNoDb s = new ScannerNoDb(db);
-                //s.Scan(-20);
-                Scanner s = new(db);
-                s.Scan(35);
+
+                //var test = db.Apps.Count();
+
                 Console.WriteLine("Scanning...");
+                Scanner s = new(db);
+                s.Scan(90);
+                //db.Filters.Add(new ScanApp.db.Model.Filter("E02250", "eProduct.CSVLoader.eProduct.CSVCashbookLoader"));
+                //db.SaveChanges();
 
 
                 var query = from a in db.Apps
@@ -33,7 +36,8 @@ namespace Scan_console_app
                 Console.WriteLine("All apps in database");
                 foreach (var app in query)
                 {
-                    Console.WriteLine(app.Name + " ---  ID: " + app.AppId + " --- Exceptions: " + db.GetExceptionsByApp(app).Count);
+                   
+                    Console.WriteLine(app.Name + " ---  ID: " + app.AppId + " --- Exceptions: " + db.GetExceptionsByAppId(app.AppId).Count);
                 }
                 Console.WriteLine("\n\n\nTime elapsed: " + watch.ElapsedMilliseconds);
             }
