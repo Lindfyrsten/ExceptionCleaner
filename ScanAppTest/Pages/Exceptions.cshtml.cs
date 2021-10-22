@@ -47,7 +47,6 @@ namespace ScanAppWeb.Pages
 
         public JsonResult OnGetAppList([DataSourceRequest] DataSourceRequest request)
         {
-            var test = 1;
             return new JsonResult(_context.Apps
                      .Select(c => new { AppId = c.AppId, AppName = c.Name }).OrderBy(o => o.AppName).ToList());
             //return new JsonResult(AppDb.ToDataSourceResult(request));
