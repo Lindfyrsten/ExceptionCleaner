@@ -45,14 +45,12 @@ namespace ScanAppWeb.Pages
             return new JsonResult(new[] { e }.ToDataSourceResult(request, ModelState));
         }
 
-        public JsonResult AppList([DataSourceRequest] DataSourceRequest request)
+        public JsonResult OnGetAppList([DataSourceRequest] DataSourceRequest request)
         {
-            if (!AppDb.Any())
-            {
-                var service = new AppService();
-                AppDb.AddRange(service.Read());
-            }
-            return new JsonResult(ExceptionsDB.ToDataSourceResult(request));
+            var test = 1;
+            return new JsonResult(_context.Apps
+                     .Select(c => new { AppId = c.AppId, AppName = c.Name }).OrderBy(o => o.AppName).ToList());
+            //return new JsonResult(AppDb.ToDataSourceResult(request));
         }
 
 

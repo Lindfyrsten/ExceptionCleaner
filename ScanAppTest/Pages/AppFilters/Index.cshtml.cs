@@ -20,7 +20,7 @@ namespace ScanApp.Web.Pages.AppFilters
     {
         [FromRoute]
         public string AppName { get; set; }
-        public List<FilterViewModel> filtersDB = new List<FilterViewModel>();
+        public List<FilterViewModel> filtersDB = new ();
 
         public IndexModel()
         {
@@ -28,13 +28,11 @@ namespace ScanApp.Web.Pages.AppFilters
 
         public void OnGet()
         {
-            //var a = this.HttpContext.Session.GetString("login");
             HttpContext.Session.SetString("appname", AppName);
         }
         public JsonResult OnPostRead([DataSourceRequest] DataSourceRequest request)
         {
             var a = this.HttpContext.Session.GetString("appname");
-            //_ = int.TryParse(a, out int id);
             if (!filtersDB.Any())
             {
                 var service = new FilterService();
@@ -45,17 +43,17 @@ namespace ScanApp.Web.Pages.AppFilters
                         filtersDB.Add(f);
                     }
                 }
-                //filtersDB.AddRange(service.Read());
             }
-
             return new JsonResult(filtersDB.ToDataSourceResult(request));
         }
-        //public JsonResult OnPostCreate([DataSourceRequest] DataSourceRequest request, FilterViewModel filter)
+
+        //public JsonResult OnPostCreate([DataSourceRequest] DataSourceRequest request, string Value)
         //{
-            
+        //    order.OrderID = orders.Count + 2;
         //    orders.Add(order);
 
         //    return new JsonResult(new[] { order }.ToDataSourceResult(request, ModelState));
         //}
+
     }
 }

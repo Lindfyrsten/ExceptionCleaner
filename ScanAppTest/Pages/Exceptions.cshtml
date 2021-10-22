@@ -6,63 +6,71 @@
 @{
     ViewData["Title"] = "Exceptions";
 }
+
+
 <br />
 <h4>@Html.Label("application", "Vælg Applikation")</h4>
 @(Html.Kendo().DropDownList()
-            .Name("apps")
-            .DataTextField("AppName")
-            .DataValueField("AppId")
-            .HtmlAttributes(new { style = "width:300px;" })
-            .AutoBind(false)
-            .Filter(FilterType.Contains)
-            .DataSource(ds => ds
-                .Read(r => r.Url(Url.Content("~/Exceptions?handler=AppList")).Data("forgeryToken"))
-                )
+        .Name("apps")
+        .DataTextField("AppName")
+        .DataValueField("AppId")
+        .HtmlAttributes(new { style = "width:300px;" })
+        .AutoBind(false)
+        .Filter(FilterType.Contains)
+        .DataSource(ds => ds
+            .Custom()
+            .Transport(transport => transport
+                .Read(r => r
+                    .Url("~/Exceptions?handler=?handler=AppList").Data("dataFunction")
+                ))
+                .ServerFiltering(true)
             )
-@(Html.Kendo().Grid<ScanAppWeb.Models.ExViewModel>()
-        .Name("Grid")
-        .Columns(columns =>
-        {
-        columns.Bound(e => e.AppName)
-            .Title("App")
-            .Width(200)
-            .HtmlAttributes(new { style = "font-size:10pt;" });
-        columns.Bound(e => e.FileName)
-            .Width(275)
-            .HtmlAttributes(new { style = "font-size:10pt;" });
-        columns.Bound(e => e.ExMsg)
-                .Title("Exception")
-                .HtmlAttributes(new { style = "font-size:8pt;" });
-        columns.Command(command =>
-        {
-            command.Custom("Details").Click("showDetails");
-            command.Destroy();
-        }).Width(200);
-        })
-        .ToolBar(toolbar =>
-        {
-            toolbar.Search();
-        })
-        .Groupable()
-        .Navigatable()
-        .Scrollable()
-        .Height(650)
-        .AutoBind(true)
-        .Filterable()
-        .DataSource(dataSource => dataSource
-            .Ajax()
-            .Read(r => r.Url(Url.Content("~/Exceptions?handler=Read")).Data("forgeryToken"))
-            .Destroy(d => d.Url(Url.Content("~/Exceptions?handler=Destroy")).Data("forgeryToken"))
-            .Model(m => m.Id(id => id.ExceptionId))
+        .FooterTemplate("Total number of <strong>#: instance.dataSource.total() #</strong> apps found")
         )
-)
-@(Html.Kendo().Window().Name("Details")
-    .Title("Details")
-    .Visible(false)
-    .Modal(true)
-    .Draggable(true)
-    .Width(600)
-)
+@*@(Html.Kendo().Grid<ScanAppWeb.Models.ExViewModel>()
+            .Name("Grid")
+            .Columns(columns =>
+            {
+            columns.Bound(e => e.AppName)
+                .Title("App")
+                .Width(200)
+                .HtmlAttributes(new { style = "font-size:10pt;" });
+            columns.Bound(e => e.FileName)
+                .Width(275)
+                .HtmlAttributes(new { style = "font-size:10pt;" });
+            columns.Bound(e => e.ExMsg)
+                    .Title("Exception")
+                    .HtmlAttributes(new { style = "font-size:8pt;" });
+            columns.Command(command =>
+            {
+                command.Custom("Details").Click("showDetails");
+                command.Destroy();
+            }).Width(200);
+            })
+            .ToolBar(toolbar =>
+            {
+                toolbar.Search();
+            })
+            .Groupable()
+            .Navigatable()
+            .Scrollable()
+            .Height(650)
+            .AutoBind(true)
+            .Filterable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Read(r => r.Url(Url.Content("~/Exceptions?handler=Read")).Data("forgeryToken"))
+                .Destroy(d => d.Url(Url.Content("~/Exceptions?handler=Destroy")).Data("forgeryToken"))
+                .Model(m => m.Id(id => id.ExceptionId))
+            )
+    )
+    @(Html.Kendo().Window().Name("Details")
+        .Title("Details")
+        .Visible(false)
+        .Modal(true)
+        .Draggable(true)
+        .Width(600)
+    )*@
 
 <script type="text/x-kendo-template" id="template">
     <div id="details-container">

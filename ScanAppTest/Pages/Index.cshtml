@@ -8,6 +8,7 @@
 @{
     ViewData["Title"] = "Statistics";
 }
+
 <div class="cards-container" align="center">
     <div class="row">
         <div class="column">
@@ -45,38 +46,6 @@
 <h6 align="center">Scans i alt: @Model.Scans.Count()</h6>
 <h6 align="center">Sidste scan: @Model.Scans.Last().Date.ToShortDateString()</h6>
 
-<div class="demo-section k-content wide">
-    @(Html.Kendo().Chart()
-        .Name("chart")
-        .Title("Total exceptions \n /per scan/")
-        .Legend(legend => legend
-            .Visible(false)
-        )
-        .ChartArea(chartArea => chartArea
-            .Background("transparent")
-        )
-        .Series(series =>
-        {
-            
-            series.Bar(Model.ChartTotals()).Name("Total Exceptions");
-            @*series.Bar(new double[] { 52000, 34000, 23000, 48000, 67000, 83000 }).Name("Unique visitors");*@
-        })
-        .CategoryAxis(axis => axis
-            .Categories(Model.ChartDates().ToArray())
-            .MajorGridLines(lines => lines.Visible(false))
-        )
-        .ValueAxis(axis => axis
-            .Numeric()
-            .Max(5000)
-            .Line(line => line.Visible(false))
-            .MajorGridLines(lines => lines.Visible(true))
-        )
-        .Tooltip(tooltip => tooltip
-            .Visible(true)
-            .Template("#= series.name #: #= value #")
-        )
-    )
-</div>
 
 <style>
 

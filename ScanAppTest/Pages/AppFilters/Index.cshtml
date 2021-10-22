@@ -36,6 +36,8 @@
         .DataSource(dataSource => dataSource
             .Ajax()
             .Read(r => r.Url(Url.Content("~/AppFilters/Index?handler=Read")).Data("forgeryToken"))
+            .Update(u => u.Url(Url.Content("~/AppFilters/Index?handler=Update")).Data("forgeryToken"))
+            .Create(c => c.Url(Url.Content("~/AppFilters/Index?handler=Create")).Data("forgeryToken"))
             .Destroy(d => d.Url(Url.Content("~/AppFilters/Index?handler=Destroy")).Data("forgeryToken"))
             .Model(m => m.Id(id => id.FilterId))
         )
