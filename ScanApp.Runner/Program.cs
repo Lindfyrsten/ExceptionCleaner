@@ -25,7 +25,7 @@ namespace ScanApp
 
                 Console.WriteLine("Scanning...");
                 Scanner s = new(db);
-                s.Scan(90);
+                s.Scan(10);
                 //db.Filters.Add(new ScanApp.db.Model.Filter("E02250", "eProduct.CSVLoader.eProduct.CSVCashbookLoader"));
                 //db.SaveChanges();
 

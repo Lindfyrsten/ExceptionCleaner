@@ -9,13 +9,15 @@
 
 
 <br />
-<h4>@Html.Label("application", "Vælg Applikation")</h4>
+<h4>@Html.Label("application", "Apps")</h4>
+<p id="appnametxt">Test</p>
 @(Html.Kendo().DropDownList()
         .Name("apps")
         .DataTextField("AppName")
         .DataValueField("AppId")
         .HtmlAttributes(new { style = "width:300px;" })
-        .AutoBind(false)
+        .OptionLabel("Vælg Applikation...")
+        .Events(e => e.Change("onChange"))
         .Filter(FilterType.Contains)
         .DataSource(ds => ds
             .Custom()
@@ -27,6 +29,40 @@
             )
         .FooterTemplate("Total number of <strong>#: instance.dataSource.total() #</strong> apps found")
         )
+@(Html.Kendo().Grid<ScanAppWeb.Models.ExViewModel>()
+          .Name("grid")
+          .Columns(columns =>
+          {
+              columns.Bound(e => e.AppName)
+                  .Title("App")
+                  .Width(200)
+                  .HtmlAttributes(new { style = "font-size:10pt;" });
+              columns.Bound(e => e.FileName)
+                  .Width(275)
+                  .HtmlAttributes(new { style = "font-size:10pt;" });
+              columns.Bound(e => e.ExMsg)
+                      .Title("Exception")
+                      .HtmlAttributes(new { style = "font-size:8pt;" });
+              columns.Command(command =>
+              {
+                  command.Custom("Details").Click("showDetails");
+                  command.Destroy();
+              }).Width(200);
+          })
+          .Pageable()
+          .Sortable(sortable =>
+          {
+              sortable.SortMode(GridSortMode.SingleColumn);
+          })
+          .AutoBind(false)
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .ServerOperation(false)
+              .PageSize(5)
+              .Model(model => { model.Id(e => e.ExceptionId);  })
+              .Read(r => r.Url(Url.Content("~/Exceptions?handler=Get_Exceptions_By_Id")).Data("forgeryToken").Data("additionalData"))
+          )
+    )
 @*@(Html.Kendo().Grid<ScanAppWeb.Models.ExViewModel>()
             .Name("Grid")
             .Columns(columns =>
@@ -113,6 +149,34 @@
 
     function forgeryToken() {
         return kendo.antiForgeryTokens();
+    }
+
+    $(document).ready(function () {
+        var app = $("#apps").data("kendoDropDownList");
+
+        $("#get").click(function () {
+            var appInfo = "\nApp: { appid: " + app.value() + ", appname: " + app.text() + " }";
+        });
+    });
+
+    function additionalData(e) {
+        var value = $("#apps").data("kendoDropDownList").value();
+        return { appid: value }; // send the app id value as part of the Read request
+    }
+
+    function onChange() {
+        var aid = this.value();
+        var grid = $("grid").data("kendoGrid")
+
+        $("#appnametxt").text("" + aid);
+        @*grid.dataSource.transport.options.read.url = Url.Content("~/Exceptions?handler=Get_Exceptions_By_Id").Data("forgeryToken").Data("additionalData");
+        grid.dataSource.read()*@
+        @*alert(aid);*@
+        @*$("#grid")*@
+        @*$.get('/Exceptions/Get_Exceptions_By_Id', { appid: aid }, function (data) {
+            var grid = $("#grid").data("kendoGrid");
+            grid.dataSource.read(); // rebind the Grid's DataSource
+        })*@
     }
 </script>
 

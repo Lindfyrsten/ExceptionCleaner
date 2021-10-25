@@ -6,17 +6,18 @@
 @{
     ViewData["Title"] = "Applications";
 }
+<br />
 @(Html.Kendo().Grid<Models.AppViewModel>()
         .Name("Grid")
         .Columns(columns =>
         {
             columns.Bound(a => a.Name).Title("Name");
-            columns.Bound(a => a.FilterCount).Title("Filters").Width(100);
+            columns.Bound(a => a.FilterCount).Title("Filters").Width(150);
 
             @*columns.Command(command => command.Custom("Edit").Action("AppFilters", "AppFilters");*@
-            columns.Command(command => command.Custom("Edit").Click("appFilters")).Width(100);
-            columns.Bound(a => a.AppExceptions).Title("Exceptions").Width(100);
-            columns.Command(command => command.Custom("Show").Click("appExceptions")).Width(100);
+            columns.Command(command => command.Custom("Edit").Click("appFilters")).Width(150);
+            columns.Bound(a => a.AppExceptions).Title("Exceptions").Width(150);
+            columns.Command(command => command.Custom("Show").Click("appExceptions")).Width(150);
         })
         .Navigatable()
         .Scrollable()
