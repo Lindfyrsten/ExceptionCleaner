@@ -21,6 +21,12 @@ namespace ScanAppWeb.Models
             get;
             set;
         }
+
+        [Display(Name = "Dato")]
+        public string Date
+        {
+            get; set;
+        }
         
         [Display(Name = "App")]
         public string AppName { get; set; }

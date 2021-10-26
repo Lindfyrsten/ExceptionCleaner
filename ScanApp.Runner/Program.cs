@@ -16,7 +16,7 @@ namespace ScanApp
             using (var db = new ExContext())
             {
 
-                db.ResetDB();
+                //db.ResetDB();
 
                 Stopwatch watch = new();
                 watch.Start();
@@ -25,7 +25,7 @@ namespace ScanApp
 
                 Console.WriteLine("Scanning...");
                 Scanner s = new(db);
-                s.Scan(10);
+                s.Scan(5);
                 //db.Filters.Add(new ScanApp.db.Model.Filter("E02250", "eProduct.CSVLoader.eProduct.CSVCashbookLoader"));
                 //db.SaveChanges();
 

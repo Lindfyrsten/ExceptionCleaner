@@ -14,6 +14,11 @@ namespace ScanApp.Web.Services
             return GetAll();
         }
 
+        public IEnumerable<ExViewModel> ReadByAppId(int appid)
+        {
+            return GetById(appid);
+        }
+
         public IList<ExViewModel> GetAll()
         {
             using (var db = new ExContext())
@@ -27,6 +32,7 @@ namespace ScanApp.Web.Services
                         AppId = ex.AppId,
                         FileName = ex.FileName,
                         ExMsg = ex.ExMsg,
+                        Date = ex.Date.ToShortDateString(),
                         AppName = db.Apps.Where(a => a.AppId == ex.AppId).FirstOrDefault().Name
                     };
                 }).ToList();
@@ -40,8 +46,7 @@ namespace ScanApp.Web.Services
         {
             using (var db = new ExContext())
             {
-
-                var result = db.Exceptions.Where(e => e.AppId == appid).ToList().Select(ex =>
+                var result = db.GetExceptionsByAppId(appid).Select(ex =>
                 {
                     return new ExViewModel
                     {
@@ -49,6 +54,7 @@ namespace ScanApp.Web.Services
                         AppId = ex.AppId,
                         FileName = ex.FileName,
                         ExMsg = ex.ExMsg,
+                        Date = ex.Date.ToShortDateString(),
                         AppName = db.Apps.Where(a => a.AppId == ex.AppId).FirstOrDefault().Name
                     };
                 }).ToList();

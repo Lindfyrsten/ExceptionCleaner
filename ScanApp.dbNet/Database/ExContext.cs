@@ -60,9 +60,9 @@ namespace ScanApp.db.Database
             return result;
         }
 
-        public List<Model.Exception> GetExceptionsByAppId(int AppId)
+        public List<Model.Exception> GetExceptionsByAppId(int appid)
         {
-            return Exceptions.Where(e => e.AppId == AppId).ToList();
+            return Exceptions.Where(e => e.AppId == appid).OrderByDescending(e => e.Date).ToList();
         }
 
         //public List<Model.Exception> GetExceptionsByAppName(string AppName)

@@ -28,13 +28,12 @@ namespace ScanAppWeb.Pages
         }
 
 
-        public JsonResult OnPostRead([DataSourceRequest] DataSourceRequest request)
+        public JsonResult OnPostRead([DataSourceRequest] DataSourceRequest request, int appid)
         {
-            if (!ExceptionsDB.Any())
-            {
-                var service = new ExceptionService();
-                ExceptionsDB.AddRange(service.Read());
-            }
+            ExceptionsDB.Clear();
+            var service = new ExceptionService();
+            var e = service.ReadByAppId(appid);
+            ExceptionsDB.AddRange(e);
             return new JsonResult(ExceptionsDB.ToDataSourceResult(request));
         }
 

@@ -33,6 +33,7 @@ namespace ScanApp
             {
                 App app = new(Path.GetFileName(folder));
                 App a = Db.AddApp(app);
+                var filterValues = GetFilters(a.Name);
                 foreach (var file in Directory.EnumerateFiles(folder, "*.log", SearchOption.AllDirectories))
                 {
                     int index = 1; //line index
@@ -47,7 +48,7 @@ namespace ScanApp
                                     if (line.Contains("Exception")) // check each line for "Exception"
                                     {
                                         bool filtered = false;
-                                        var filterValues = GetFilters(a.Name);
+                                        
                                         if (filterValues.Any())
                                         {
                                             foreach (var filter in filterValues)
@@ -66,6 +67,7 @@ namespace ScanApp
                                         foreach (string preline in File.ReadLines(file).Skip((index -1) - prelines).Take(prelines)) { // read up to 3 previous lines prior to exception
                                             sb.Append(preline); // save each in stringbuilder
                                         }
+                                        Console.WriteLine(index + ": " + line);
                                         db.Model.Exception ex = new(a.AppId, index, line, dt, sb.ToString(), filenameWithoutPath);
                                         Db.AddException(ex);
                                         }
