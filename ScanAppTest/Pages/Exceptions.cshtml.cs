@@ -48,18 +48,6 @@ namespace ScanAppWeb.Pages
         {
             return new JsonResult(_context.Apps
                      .Select(c => new { AppId = c.AppId, AppName = c.Name }).OrderBy(o => o.AppName).ToList());
-            //return new JsonResult(AppDb.ToDataSourceResult(request));
         }
-
-        public ActionResult Get_Exceptions_By_Id([DataSourceRequest]DataSourceRequest request, int appid)
-        {
-            var service = new ExceptionService();
-            var result = service.GetById(appid);
-            //var result = _context.GetExceptionsByAppId(appid);
-            return new JsonResult(result.ToDataSourceResult(request));
-            
-        }
-
-
     }
 }

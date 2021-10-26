@@ -27,7 +27,7 @@ namespace ScanApp.Web.Services
                     {
                         AppId = app.AppId,
                         Name = app.Name,
-                        AppExceptions = db.GetExceptionsByAppId(app.AppId).Count(),
+                        AppExceptions = db.GetExceptionsByAppId(app.AppId).Count,
                         FilterCount = db.Filters.Where(f => f.AppName == app.Name).Count()
                             
                     };
