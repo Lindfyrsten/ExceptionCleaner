@@ -22,7 +22,7 @@
             .Custom()
             .Transport(transport => transport
                 .Read(r => r
-                    .Url(Url.Content("~/Exceptions?handler=AppList")).Data("dataFunction")
+                    .Url(Url.Content("~/Exceptions?handler=AppList")).Data("forgeryToken")
                 ))
                 .ServerFiltering(true)
             )
