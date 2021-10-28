@@ -46,7 +46,39 @@
 <h6 align="center">Scans i alt: @Model.Scans.Count()</h6>
 <h6 align="center">Sidste scan: @Model.Scans.Last().Date</h6>
 
-
+<div class="demo-section k-content wide">
+    @(Html.Kendo().Chart()
+                .Name("chart")
+                .Title("Exceptions \n /latest scans/")
+                .Legend(legend => legend
+                    .Visible(false)
+                )
+                .ChartArea(chartArea => chartArea
+                    .Background("transparent")
+                )
+                .Series(series =>
+                {
+                    series.Bar(
+                        Model.ChartTotals().ToArray())
+                    .Name("Total Exceptions");
+                })
+                .CategoryAxis(axis => axis
+                    .Categories(@Model.ChartDates().ToArray())
+                    .MajorGridLines(lines => lines.Visible(false))
+                    .Name("Scan date")
+                )
+        .ValueAxis(axis => axis
+            .Numeric()
+            .Max(10000)
+            .Line(line => line.Visible(false))
+            .MajorGridLines(lines => lines.Visible(true))
+        )
+        .Tooltip(tooltip => tooltip
+            .Visible(true)
+            .Template("#= series.name #: #= value #")
+        )
+    )
+</div>
 <style>
 
     * {

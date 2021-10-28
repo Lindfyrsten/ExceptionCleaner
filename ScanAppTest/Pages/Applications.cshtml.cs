@@ -34,9 +34,10 @@ namespace ScanAppWeb.Pages
             return new JsonResult(appsDB.ToDataSourceResult(request));
         }
 
-        public ActionResult HierarchyBinding_Filters(string appname, [DataSourceRequest] DataSourceRequest request)
+        public JsonResult HierarchyBinding_Filters([DataSourceRequest] DataSourceRequest request, string appname)
         {
-            return new JsonResult(_context.Filters.ToList()
+            var service = new FilterService();
+            return new JsonResult(service.Read().ToList()
                 .Where(filter => filter.AppName == appname)
                 .ToDataSourceResult(request));
         }

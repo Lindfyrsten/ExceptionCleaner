@@ -12,10 +12,10 @@
                 .Columns(columns =>
                 {
                 columns.Bound(a => a.Name).Title("Name");
-                columns.Bound(a => a.FilterCount).Title("Filters").Width(150);
-                columns.Command(command => command.Custom("Edit").Click("appFilters")).Width(150);
-                columns.Bound(a => a.AppExceptions).Title("Exceptions").Width(150);
-                columns.Command(command => command.Custom("Show").Click("appExceptions")).Width(150);
+                columns.Bound(a => a.FilterCount).Title("Filters").Width(100);
+                columns.Command(command => command.Custom("Edit").Click("appFilters")).Width(100);
+                columns.Bound(a => a.AppExceptions).Title("Exceptions").Width(125);
+                columns.Command(command => command.Custom("Show").Click("appExceptions")).Width(100);
                 })
                 .Navigatable()
                 .Scrollable()
@@ -27,6 +27,7 @@
                     .Read(r => r.Url(Url.Content("~/Applications?handler=Read")).Data("forgeryToken"))
                     .Model(m => m.Id(id => id.AppId))
                 )
+                .Events(events => events.DataBound("dataBound"))
    )
 
 <script id="template" type="text/kendo-tmpl">
@@ -39,13 +40,19 @@
                     .DataSource(dataSource => dataSource
                         .Ajax()
                         .PageSize(10)
-                        .Read(r => r.Action("HierarchyBinding_Filters", "Grid", new { appname = "#=AppName#" }).Data("forgeryToken"))
+                        .Read(r => r.Url(Url.Content("~/Applications?handler=HierarchyBinding_Filters")).Data("additionalData"))
+                        @*.Read(r => r.Action("HierarchyBinding_Filters", "Grid", new { appname = "#=AppName#" }).Data("forgeryToken"))*@
 
             )
             .Pageable()
             .Sortable()
             .ToClientTemplate()
     )
+</script>
+<script>
+    function dataBound() {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
 </script>
 <script type="text/javascript">
 
@@ -66,11 +73,17 @@
         window.location.href = "/AppFilters/Index/" + name;
     }
 
+    function additionalData(e) {
+        var name = "#=AppName#";
+        return {
+            __RequestVerificationToken: kendo.antiForgeryTokens().__RequestVerificationToken,
+            appname: name
+        };
+    }
+
     function forgeryToken() {
         return kendo.antiForgeryTokens();
     }
-
-
 
 </script>
 
@@ -78,15 +91,12 @@
     #details-container {
         padding: 10px;
     }
-
     #details-container h2 {
         margin: 0;
     }
-
     #details-container em {
         color: #8c8c8c;
     }
-
     #details-container dt {
         margin: 0;
         display: inline;
