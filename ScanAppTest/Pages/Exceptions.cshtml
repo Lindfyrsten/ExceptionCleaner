@@ -6,8 +6,6 @@
 @{
     ViewData["Title"] = "Exceptions";
 }
-
-
 <br />
 <h4>@Html.Label("application", "Apps")</h4>
 @(Html.Kendo().DropDownList()
@@ -24,7 +22,6 @@
                 .Read(r => r
                     .Url(Url.Content("~/Exceptions?handler=AppList")).Data("forgeryToken")
                 ))
-                .ServerFiltering(true)
             )
         .FooterTemplate("Total number of <strong>#: instance.dataSource.total() #</strong> apps found")
         )
@@ -43,11 +40,8 @@
               columns.Bound(e => e.ExMsg)
                       .Title("Exception")
                       .HtmlAttributes(new { style = "font-size:8pt;" });
-              columns.Command(command =>
-              {
-                  command.Custom("Details").Click("showDetails");
-                  command.Destroy();
-              }).Width(200);
+              columns.Command(command => command.Custom("Details").Click("showDetails")).Width(100);
+              columns.Command(command => command.Destroy()).Width(100);
           })
           .Pageable()
           .Sortable(sortable =>
@@ -58,56 +52,13 @@
           .DataSource(dataSource => dataSource
               .Ajax()
               .ServerOperation(false)
-              .PageSize(5)
+              .PageSize(10)
               .Model(model => { model.Id(e => e.ExceptionId);  })
               .Read(r => r.Url(Url.Content("~/Exceptions?handler=Read")).Data("additionalData"))
+              .Destroy(r => r.Url(Url.Content("~/Exceptions?handler=Destroy")).Data("forgeryToken"))
               @*.Sort(sort => sort.Add("Date").Descending())*@
           )
     )
-@*@(Html.Kendo().Grid<ScanAppWeb.Models.ExViewModel>()
-            .Name("Grid")
-            .Columns(columns =>
-            {
-            columns.Bound(e => e.AppName)
-                .Title("App")
-                .Width(200)
-                .HtmlAttributes(new { style = "font-size:10pt;" });
-            columns.Bound(e => e.FileName)
-                .Width(275)
-                .HtmlAttributes(new { style = "font-size:10pt;" });
-            columns.Bound(e => e.ExMsg)
-                    .Title("Exception")
-                    .HtmlAttributes(new { style = "font-size:8pt;" });
-            columns.Command(command =>
-            {
-                command.Custom("Details").Click("showDetails");
-                command.Destroy();
-            }).Width(200);
-            })
-            .ToolBar(toolbar =>
-            {
-                toolbar.Search();
-            })
-            .Groupable()
-            .Navigatable()
-            .Scrollable()
-            .Height(650)
-            .AutoBind(true)
-            .Filterable()
-            .DataSource(dataSource => dataSource
-                .Ajax()
-                .Read(r => r.Url(Url.Content("~/Exceptions?handler=Read")).Data("forgeryToken"))
-                .Destroy(d => d.Url(Url.Content("~/Exceptions?handler=Destroy")).Data("forgeryToken"))
-                .Model(m => m.Id(id => id.ExceptionId))
-            )
-    )
-    @(Html.Kendo().Window().Name("Details")
-        .Title("Details")
-        .Visible(false)
-        .Modal(true)
-        .Draggable(true)
-        .Width(600)
-    )*@
 
 <script type="text/x-kendo-template" id="template">
     <div id="details-container">
@@ -124,9 +75,7 @@
 </script>
 
 <script type="text/javascript">
-
     var detailsTemplate;
-
     $(document).ready(function () {
         detailsTemplate = kendo.template($("#template").html());
     });
@@ -156,7 +105,6 @@
         }; 
     }
 
-
     function onChange() {
         $('#grid').data('kendoGrid').dataSource.read();
     }
@@ -164,24 +112,20 @@
     function forgeryToken() {
         return kendo.antiForgeryTokens();
     }
-
 </script>
 
 <style>
     #details-container {
         padding: 10px;
     }
-
-        #details-container h2 {
-            margin: 0;
-        }
-
-        #details-container em {
-            color: #8c8c8c;
-        }
-
-        #details-container dt {
-            margin: 0;
-            display: inline;
-        }
+    #details-container h2 {
+        margin: 0;
+    }
+    #details-container em {
+        color: #8c8c8c;
+    }
+    #details-container dt {
+        margin: 0;
+        display: inline;
+    }
 </style>

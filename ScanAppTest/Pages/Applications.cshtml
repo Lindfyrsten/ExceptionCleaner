@@ -8,27 +8,45 @@
 }
 <br />
 @(Html.Kendo().Grid<Models.AppViewModel>()
-        .Name("Grid")
-        .Columns(columns =>
-        {
-            columns.Bound(a => a.Name).Title("Name");
-            columns.Bound(a => a.FilterCount).Title("Filters").Width(150);
-
-            @*columns.Command(command => command.Custom("Edit").Action("AppFilters", "AppFilters");*@
-            columns.Command(command => command.Custom("Edit").Click("appFilters")).Width(150);
-            columns.Bound(a => a.AppExceptions).Title("Exceptions").Width(150);
-            columns.Command(command => command.Custom("Show").Click("appExceptions")).Width(150);
-        })
-        .Navigatable()
-        .Scrollable()
-        .AutoBind(true)
-        .Sortable()
-        .DataSource(dataSource => dataSource
-            .Ajax()
-            .Read(r => r.Url(Url.Content("~/Applications?handler=Read")).Data("forgeryToken"))
-            .Model(m => m.Id(id => id.AppId))
-        )
+                .Name("Grid")
+                .Columns(columns =>
+                {
+                columns.Bound(a => a.Name).Title("Name");
+                columns.Bound(a => a.FilterCount).Title("Filters").Width(150);
+                columns.Command(command => command.Custom("Edit").Click("appFilters")).Width(150);
+                columns.Bound(a => a.AppExceptions).Title("Exceptions").Width(150);
+                columns.Command(command => command.Custom("Show").Click("appExceptions")).Width(150);
+                })
+                .Navigatable()
+                .Scrollable()
+                .AutoBind(true)
+                .Sortable()
+                .ClientDetailTemplateId("template")
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Read(r => r.Url(Url.Content("~/Applications?handler=Read")).Data("forgeryToken"))
+                    .Model(m => m.Id(id => id.AppId))
+                )
    )
+
+<script id="template" type="text/kendo-tmpl">
+    @(Html.Kendo().Grid<Models.FilterViewModel>()
+                    .Name("grid_#=AppName#")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(f => f.Value).Width(200);
+                    })
+                    .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .PageSize(10)
+                        .Read(r => r.Action("HierarchyBinding_Filters", "Grid", new { appname = "#=AppName#" }).Data("forgeryToken"))
+
+            )
+            .Pageable()
+            .Sortable()
+            .ToClientTemplate()
+    )
+</script>
 <script type="text/javascript">
 
     function appExceptions(e) {
@@ -57,23 +75,22 @@
 </script>
 
 <style>
-
     #details-container {
         padding: 10px;
     }
 
-        #details-container h2 {
-            margin: 0;
-        }
+    #details-container h2 {
+        margin: 0;
+    }
 
-        #details-container em {
-            color: #8c8c8c;
-        }
+    #details-container em {
+        color: #8c8c8c;
+    }
 
-        #details-container dt {
-            margin: 0;
-            display: inline;
-        }
+    #details-container dt {
+        margin: 0;
+        display: inline;
+    }
 </style>
 
 
