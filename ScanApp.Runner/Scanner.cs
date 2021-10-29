@@ -27,6 +27,10 @@ namespace ScanApp
         public void Scan(int days)
         {
             DateTime now = DateTime.Now;
+            //DateTime lastScan;
+            //if (Db.ScanInfos.Any()){
+            //    lastScan = Db.ScanInfos.Last().Date;
+            //}
             var regex = new Regex(@"\d{4}-\d{2}-\d{2}|\d{8}"); // regex of yyyy-mm-dd and yyyymmdd
             string[] formats = { "yyyy-MM-dd", "yyyyMMdd" };
             foreach (var folder in Directory.EnumerateDirectories(@"C:\testdata\"))

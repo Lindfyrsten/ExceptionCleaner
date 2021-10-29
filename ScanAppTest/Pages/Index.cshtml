@@ -14,7 +14,7 @@
         <div class="column">
             <div class="k-card">
                 <div class="k-card-header">
-                    <span class="k-card-title">I alt</span>
+                    <span class="k-card-title">Exceptions i alt</span>
                 </div>
                 <div class="k-card-body">
                     <div style="font-size: 84px; line-height: 101px; color: #F31700;">@Model.Scans.Last().ExTotal</div>
@@ -70,6 +70,7 @@
         .ValueAxis(axis => axis
             .Numeric()
             .Max(10000)
+            .Min(0)
             .Line(line => line.Visible(false))
             .MajorGridLines(lines => lines.Visible(true))
         )

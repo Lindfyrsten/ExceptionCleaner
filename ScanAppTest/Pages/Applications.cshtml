@@ -32,7 +32,7 @@
 
 <script id="template" type="text/kendo-tmpl">
     @(Html.Kendo().Grid<Models.FilterViewModel>()
-                    .Name("grid_#=AppName#")
+                    .Name("grid_#=Name#")
                     .Columns(columns =>
                     {
                         columns.Bound(f => f.Value).Width(200);
@@ -41,7 +41,7 @@
                         .Ajax()
                         .PageSize(10)
                         .Read(r => r.Url(Url.Content("~/Applications?handler=HierarchyBinding_Filters")).Data("additionalData"))
-                        @*.Read(r => r.Action("HierarchyBinding_Filters", "Grid", new { appname = "#=AppName#" }).Data("forgeryToken"))*@
+                        @*.Read(r => r.Action("HierarchyBinding_Filters", "Applications", new { appname = "#=Name#" }))*@
 
             )
             .Pageable()
@@ -74,7 +74,7 @@
     }
 
     function additionalData(e) {
-        var name = "#=AppName#";
+        var name = "#=Name#";
         return {
             __RequestVerificationToken: kendo.antiForgeryTokens().__RequestVerificationToken,
             appname: name
