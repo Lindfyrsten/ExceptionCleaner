@@ -56,7 +56,6 @@
               .Model(model => { model.Id(e => e.ExceptionId);  })
               .Read(r => r.Url(Url.Content("~/Exceptions?handler=Read")).Data("additionalData"))
               .Destroy(r => r.Url(Url.Content("~/Exceptions?handler=Destroy")).Data("forgeryToken"))
-              @*.Sort(sort => sort.Add("Date").Descending())*@
           )
     )
 
@@ -75,8 +74,16 @@
 </script>
 
 <script type="text/javascript">
-    var detailsTemplate;
+    var wnd, detailsTemplate;
     $(document).ready(function () {
+        wnd = $("#details")
+            .kendoWindow({
+                title: "Exception Details",
+                modal: true,
+                visible: false,
+                resizable: false,
+                width: 300
+            }).data("kendoWindow");
         detailsTemplate = kendo.template($("#template").html());
     });
 
@@ -84,8 +91,6 @@
         e.preventDefault();
 
         var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
-        var wnd = $("#Details").data("kendoWindow");
-
         wnd.content(detailsTemplate(dataItem));
         wnd.center().open();
     }

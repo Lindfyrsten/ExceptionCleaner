@@ -47,6 +47,16 @@ namespace ScanApp.Web.Pages.AppFilters
             return new JsonResult(filtersDB.ToDataSourceResult(request));
         }
 
+        public JsonResult OnPostUpdate([DataSourceRequest] DataSourceRequest request, FilterViewModel filter)
+        {
+            using (var db = new ExContext())
+            {
+                db.Filters.Where(x => x.FilterId == filter.FilterId).Select(x => filter);
+                db.SaveChanges();
+            }
+            return new JsonResult(new[] { filter }.ToDataSourceResult(request, ModelState));
+        }
+
         //public JsonResult OnPostCreate([DataSourceRequest] DataSourceRequest request, string Value)
         //{
         //    order.OrderID = orders.Count + 2;

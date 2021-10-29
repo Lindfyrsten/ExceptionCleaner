@@ -23,16 +23,17 @@
             command.Destroy();
         }).Width(200);
         })
-        .ToolBar(toolbar =>
+          .ToolBar(toolbar =>
         {
-            toolbar.Search();
+            toolbar.Create();
+            toolbar.Save();
         })
         .Groupable()
+        .Editable(editable => editable.Mode(GridEditMode.InCell))
         .Navigatable()
         .Scrollable()
         .Height(650)
         .AutoBind(true)
-        .Filterable()
         .DataSource(dataSource => dataSource
             .Ajax()
             .Read(r => r.Url(Url.Content("~/AppFilters/Index?handler=Read")).Data("forgeryToken"))
@@ -44,9 +45,9 @@
 )
 
 <script type="text/javascript">
-        function forgeryToken() {
-            return kendo.antiForgeryTokens();
-        }
+    function forgeryToken() {
+        return kendo.antiForgeryTokens();
+    }
 </script>
 @*<h1>Index</h1>
 
