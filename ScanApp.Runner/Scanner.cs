@@ -27,10 +27,6 @@ namespace ScanApp
         public void Scan(int days)
         {
             DateTime now = DateTime.Now;
-            //DateTime lastScan;
-            //if (Db.ScanInfos.Any()){
-            //    lastScan = Db.ScanInfos.Last().Date;
-            //}
             var regex = new Regex(@"\d{4}-\d{2}-\d{2}|\d{8}"); // regex of yyyy-mm-dd and yyyymmdd
             string[] formats = { "yyyy-MM-dd", "yyyyMMdd" };
             foreach (var folder in Directory.EnumerateDirectories(@"C:\testdata\"))
@@ -52,28 +48,26 @@ namespace ScanApp
                                     if (line.Contains("Exception")) // check each line for "Exception"
                                     {
                                         bool filtered = false;
-                                        
                                         if (filterValues.Any())
                                         {
                                             foreach (var filter in filterValues)
                                             {
                                                 if (line.Contains(filter.Value)) { filtered = true; }
                                             }
-
                                         }
                                         if (!filtered)
                                         {
-                                        StringBuilder sb = new();
-                                        int prelines = 3;
-                                        if (index <= 3) {
-                                                prelines = index - 1;
-                                        }
-                                        foreach (string preline in File.ReadLines(file).Skip((index -1) - prelines).Take(prelines)) { // read up to 3 previous lines prior to exception
-                                            sb.Append(preline); // save each in stringbuilder
-                                        }
-                                        Console.WriteLine(index + ": " + line);
-                                        db.Model.Exception ex = new(a.AppId, index, line, dt, sb.ToString(), filenameWithoutPath);
-                                        Db.AddException(ex);
+                                            StringBuilder sb = new(); 
+                                            int prelines = 3;
+                                            if (index <= 3) {
+                                                    prelines = index - 1;
+                                            }
+                                            foreach (string preline in File.ReadLines(file).Skip((index -1) - prelines).Take(prelines)) { // read up to 3 previous lines prior to exception
+                                                sb.Append(preline); // save each in stringbuilder
+                                            }
+                                            Console.WriteLine(index + ": " + line);
+                                            db.Model.Exception ex = new(a.AppId, index, line, dt, sb.ToString(), filenameWithoutPath);
+                                            Db.AddException(ex);
                                         }
                                     }
                                     index++; // add to index to keep track of line number

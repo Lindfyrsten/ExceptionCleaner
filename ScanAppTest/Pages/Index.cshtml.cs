@@ -36,18 +36,17 @@ namespace ScanApp.Web.Pages
         public List<int> ChartTotals()
         {
             List<int> ScanNumbers = new();
-            foreach(var scan in Scans)
+            foreach(var scan in Scans.OrderByDescending(m => m.Date))
             {
                 ScanNumbers.Add(scan.ExTotal);
             }
-
             return ScanNumbers;
         }
 
         public List<string> ChartDates()
         {
             List<string> ScanDates = new();
-            foreach(var scan in Scans)
+            foreach(var scan in Scans.OrderByDescending(m => m.Date))
             {
                 ScanDates.Add(scan.Date.ToShortDateString());
             }
